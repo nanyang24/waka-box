@@ -4,7 +4,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: "0 5 * * *"
+    - cron: "0 0 * * *"
 jobs:
   update-gist:
     runs-on: ubuntu-latest
@@ -14,5 +14,5 @@ jobs:
         uses: matchai/waka-box@master
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GIST_ID: 15dace1ccea3b44c6501ea8fa72c8ac4
+          GIST_ID: 3e404edf1b405cd864656ab423dbef0b
           WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
