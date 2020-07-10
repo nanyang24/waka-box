@@ -18,12 +18,10 @@ async function main() {
 }
 
 async function updateGist(stats) {
-  let gist;
-  try {
-    gist = await octokit.gists.get({ gist_id: gistId });
-  } catch (error) {
-    console.error(`Unable to get gist\n${error}`);
-  }
+  const gist = await octokit.gists.get({ gist_id: gistId }).catch(error => {
+    console.error("Cannot update gist.");
+    throw error;
+  });
 
   const lines = [];
   for (let i = 0; i < Math.min(stats.data.languages.length, 5); i++) {
@@ -42,10 +40,10 @@ async function updateGist(stats) {
 
   if (lines.length == 0) return;
 
-  try {
-    // Get original filename to update that same file
-    const filename = Object.keys(gist.data.files)[0];
-    await octokit.gists.update({
+  // Get original filename to update that same file
+  const filename = Object.keys(gist.data.files)[0];
+  await octokit.gists
+    .update({
       gist_id: gistId,
       files: {
         [filename]: {
@@ -53,10 +51,11 @@ async function updateGist(stats) {
           content: lines.join("\n")
         }
       }
+    })
+    .catch(error => {
+      console.error("Cannot to update gist.");
+      throw error;
     });
-  } catch (error) {
-    console.error(`Unable to update gist\n${error}`);
-  }
 }
 
 function generateBarChart(percent, size) {
